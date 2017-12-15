@@ -5,6 +5,11 @@ const {mongoose} = require('./db/mongoose');
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
 
+//const ObjectId = mongoose.Schema.Types.ObjectId;
+const {ObjectId} = require('mongodb');
+
+console.log('ObjectId - ', ObjectId);
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -21,12 +26,28 @@ app.post('/todos', (req, res) => {
   });
 });
 
-
 app.get('/todos', (req,res)=>{
     Todo.find()
     .then((todos)=>{
         res.send({todos});
     }, (e)=>{
+        res.status(400).send(e);
+    });
+});
+
+app.get('/todos/:id', (req,res)=>{
+
+    if(!ObjectId.isValid(req.params.id))
+        res.status(404).send('invalid id');
+
+    Todo.findById(req.params.id)
+    .then(todo=>{
+        if(!todo)
+            res.status(404).send('not found');
+        else
+            res.send(todo);
+    })
+    .catch(e=>{
         res.status(400).send(e);
     });
 });
