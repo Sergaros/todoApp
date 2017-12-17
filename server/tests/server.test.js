@@ -11,7 +11,9 @@ const todos = [{
 },
 {
     _id: new ObjectId(),
-    text: 'Second test todo'
+    text: 'Second test todo',
+    completed: true,
+    completedAt: 333
 }];
 
 beforeEach(done=>{
@@ -137,6 +139,57 @@ describe('DELETE /todos/:id', ()=>{
     it('should remove 404 if invalid id', done=>{
         request(app)
         .delete('/todos/123')
+        .expect(404)
+        .end(done);
+    });
+});
+
+describe('PATCH /todos/:id', ()=>{
+    const data = {text: 'update test text', completed: true};
+
+    it('should update a todo', done=>{
+        request(app)
+        .patch(`/todos/${todos[0]._id.toHexString()}`)
+        .send(data)
+        .expect(200)
+        .end((err, res)=>{
+            if(err)
+                return done(err);
+
+            expect(res.body.todo.text).toBe(data.text);
+            expect(res.body.todo.completed).toBe(true);
+            expect(res.body.todo.completedAt).toBeA('number');
+            done();
+        });
+    });
+
+    it('should clear completedAt when todo is not completed', done=>{
+        request(app)
+        .patch(`/todos/${todos[1]._id.toHexString()}`)
+        .send({completed: false})
+        .expect(200)
+        .end((err, res)=>{
+            if(err)
+                return done(err);
+
+            expect(res.body.todo.completed).toBe(false);
+            expect(res.body.todo.completedAt).toNotExist();
+            done();
+        });
+    });
+
+    it('should remove 404 if todo not found', done=>{
+        const _id = new ObjectId().toHexString();
+
+        request(app)
+        .patch(`/todos/${_id}`)
+        .expect(404)
+        .end(done);
+    });
+
+    it('should remove 404 if invalid id', done=>{
+        request(app)
+        .patch('/todos/123')
         .expect(404)
         .end(done);
     });
