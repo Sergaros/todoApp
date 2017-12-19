@@ -328,8 +328,4 @@ describe('DELETE /users/me/token', ()=>{
                 .catch(e=>done(e));
             });
     });
-
-    // it('', done=>{
-    //
-    // });
 });
