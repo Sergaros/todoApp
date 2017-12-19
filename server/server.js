@@ -5,10 +5,7 @@ const {mongoose} = require('./db/mongoose');
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
 
-//const ObjectId = mongoose.Schema.Types.ObjectId;
 const {ObjectId} = require('mongodb');
-
-console.log('ObjectId - ', ObjectId);
 
 const app = express();
 
