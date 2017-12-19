@@ -194,3 +194,15 @@ describe('PATCH /todos/:id', ()=>{
         .end(done);
     });
 });
+
+/*describe('GET /users/me', ()=>{
+    it('should return user if authenticated', (done)=>{
+        request(app)
+        .get('users/me')
+        .set('x-auth', )
+    });
+
+    it('should return 401 if not authenticated', (done)=>{
+
+    });
+});*/
