@@ -130,7 +130,7 @@ describe('DELETE /todos/:id', ()=>{
         });
     });
 
-    it('should not remove a todo', done=>{
+    it('should not remove a todo created by other user', done=>{
         request(app)
         .delete(`/todos/${todos[0]._id.toHexString()}`)
         .set('x-auth', users[1].tokens[0].token)
@@ -187,19 +187,13 @@ describe('PATCH /todos/:id', ()=>{
         });
     });
 
-    it('should not update a todo', done=>{
+    it('should not update a todo created by other user', done=>{
         request(app)
         .patch(`/todos/${todos[0]._id.toHexString()}`)
         .set('x-auth', users[1].tokens[0].token)
         .send(data)
         .expect(404)
-        .end((err, res)=>{
-            if(err)
-                return done(err);
-
-                expect(res.body.todo).toNotExist(data.text);
-            done();
-        });
+        .end(done);
     });
 
     it('should clear completedAt when todo is not completed', done=>{
